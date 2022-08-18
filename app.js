@@ -35,36 +35,36 @@ const contactsData = [  //Cria uma variável que funciona como uma lista de cont
 
 //CONTROLLER DATA
 
-class AddressBookCtrl { 
+class AddressBookCtrl {  //utiliza esse método para criar e inicializar objetos
     constructor(addressBookView) {
         this.addressBookView = addressBookView;
     }
 
-    init() {
+    init() {                                    //inicia o método
         this.addressBookView.init();
     }
 
-    getContacts() {
+    getContacts() {                     //usada para acessar a propriedade de um objeto, no caso a array de objetos
         return contactsData;
     }
 
-    getContact(index) {
+    getContact(index) {                 //usada para acessar o índice de um objeto, no caso a array de objetos
         return contactsData[index];
     }
 
-    addContact(contact) {
+    addContact(contact) {                  //usada para adicionar contatos na array
         contactsData.push(contact);
     }
-    removeContact(index) {
+    removeContact(index) {                 //usada para remover contatos da array
         contactsData.splice(index, 1);
     }
 
 
 }
 
-//VIEW DATA
+//VIEW DATA 
 
-class AddressBookView {
+class AddressBookView {             //essa é a área do código responsável pela visualização e renderização do "address book"
     init() {
         this.renderContactListModule();
         this.renderContactDetailsModule(0);
@@ -73,32 +73,32 @@ class AddressBookView {
 
     //ADICIONAR
 
-    addContactModule() {
+    addContactModule() {                       //módulo que vai ser responsável por adicionar os contatos
         const $addContact = document.getElementById('add-contact-btn');
         $addContact.addEventListener("click", this.addContactBtnClicked.bind(this));
     }
 
-    addContactBtnClicked() {
+    addContactBtnClicked() { //módulo que vai ser responsável por adicionar os contatos quando o botão for clicado
 
-        // get the add contact form inputs 
-        const $addContactInputs = document.getElementsByClassName('add-contact-input');
+        
+        const $addContactInputs = document.getElementsByClassName('add-contact-input'); //aqui vão os inputs dos formulários do "add contact"
 
-        // this object will hold the new contact information
-        let newContact = {};
+        
+        let newContact = {}; //vai "abrigar" os novos contatos
 
-        // loop through View to get the data for the model 
-        for (let i = 0, len = $addContactInputs.length; i < len; i++) {
+        
+        for (let i = 0, len = $addContactInputs.length; i < len; i++) { //percorre o array para pegar os dados
 
             let key = $addContactInputs[i].getAttribute('data-key');
             let value = $addContactInputs[i].value;
             newContact[key] = value;
         }
 
-        // passing new object to the addContact method 
-        addressBookApp.addContact(newContact);
+        
+        addressBookApp.addContact(newContact); //acrescenta novos objetos no método addContact
 
-        // render the contact list with the new data set
-        this.renderContactListModule();
+        
+        this.renderContactListModule(); //renderiza a lista de contatos com os novos dados
 
     }
 
@@ -106,20 +106,20 @@ class AddressBookView {
 
     editContactBtnClicked(e) {
 
-        // show edit contact module
-        document.getElementById('edit-contact-module').style.display = "block";
+        
+        document.getElementById('edit-contact-module').style.display = "block"; //vai mostrar o botão de editar
 
         // model
         let selectedIndex = null;
 
-        if (typeof e === 'object') {
+        if (typeof e === 'object') { //Esse eu não entendi muito bem. Recebe um atributo se o tipo de 'e' for um objeto? 
             e.stopPropagation();
             selectedIndex = e.target.getAttribute('data-index');
         } else {
             selectedIndex = e;
         }
 
-        this.showContactDataOnEditFormInputs(selectedIndex);
+        this.showContactDataOnEditFormInputs(selectedIndex); //Vai exibir os dados salvos no contato quando o botão edit for clicado
 
         // save the edited contact
         const $saveContactBtn = document.getElementById('edit-contact-btn');
@@ -128,9 +128,9 @@ class AddressBookView {
 
     }
 
-    showContactDataOnEditFormInputs(selectedIndex) {
+    showContactDataOnEditFormInputs(selectedIndex) { //mostra os dados de contato no "edit form"
 
-        const $editContactInputs = document.getElementsByClassName('edit-contact-input');
+        const $editContactInputs = document.getElementsByClassName('edit-contact-input'); 
 
         for (let i = 0, len = $editContactInputs.length; i < len; i++) {
             $editContactInputs[i].value = contactsData[selectedIndex][$editContactInputs[i].getAttribute("data-key")];
@@ -138,19 +138,19 @@ class AddressBookView {
 
     }
 
-    saveEditContactBtnClicked(e) {
+    saveEditContactBtnClicked(e) { //salva o contato depois de editado
 
-        // get the selected index
-        const selectedIndex = e.target.getAttribute('data-index');
+        
+        const selectedIndex = e.target.getAttribute('data-index'); //pega o index selecionado
 
-        // cache the save button
+        
         const $editContactInputs = document.getElementsByClassName('edit-contact-input');
 
-        // create an empty object that will hold the newly edited contact
-        const newContact = {};
+       
+        const newContact = {}; //cria um objeto vazio que vai guardar o novo contato editado
 
-        // loop throught the inputs and get the data out of it and store it in the object
-        for (let i = 0, len = $editContactInputs.length; i < len; i++) {
+        
+        for (let i = 0, len = $editContactInputs.length; i < len; i++) { //faz um loop através dos inputs para pegar dados e armazenar nos objetos
 
             let key = $editContactInputs[i].getAttribute('data-key');
             let value = $editContactInputs[i].value;
@@ -158,23 +158,23 @@ class AddressBookView {
 
         }
 
-        // passing the index number and new object to the controller
-        addressBookApp.editContact(selectedIndex, newContact);
+        
+        addressBookApp.editContact(selectedIndex, newContact); //passar o index e novo objeto pro controlador
 
-        // render the contact list module in order to get the edited data
-        this.renderContactListModule();
+        
+        this.renderContactListModule(); //renderiza a lista de contatos
 
-        // hide the edit form 
-        document.getElementById('edit-contact-module').style.display = "none";
+        
+        document.getElementById('edit-contact-module').style.display = "none"; //esconde o módulo de contato? não entendi o "none"
 
     }
 
-//DELETAR
+
 
 removeContact(e) {
 
     // get the selected index
-    let selectedIndex = null;
+    let selectedIndex = null; //pega o index selecionado
 
     if (typeof e === 'object') {
         e.stopPropagation();
@@ -184,18 +184,18 @@ removeContact(e) {
     }
 
 
-    // passing it into the removeContact method which is in the controller AddressBookCtrl
-    addressBookApp.removeContact(selectedIndex);
+    
+    addressBookApp.removeContact(selectedIndex); //passa as informações pro módulo de remover contatos
 
-    // render the list
-    this.renderContactListModule();
+    
+    this.renderContactListModule(); //renderiza lista de contatos
 
 }
 
 //RENDERIZAR
 
 
-    renderContactDetailsModule(e) {
+    renderContactDetailsModule(e) { //renderiza a lista de contatos
         let selectedIndex = null;
 
 
@@ -206,16 +206,16 @@ removeContact(e) {
             selectedIndex = e;
         }
 
-// get the selected contact based on the index from the controller
-const selectedItem = addressBookApp.getContact(selectedIndex);
 
-// cache the contact details module 
-const $ContactItemUI = document.getElementById('contact-item-details');
+const selectedItem = addressBookApp.getContact(selectedIndex); //pega o contato selecionado pelo indice
 
-// render the data on the module
-$ContactItemUI.innerHTML = `${selectedItem['fname']} <br> ${selectedItem['lname']} <br> ${selectedItem['phone']} <br> ${selectedItem['email']}`;
 
-this.hightlightCurrentListItem(selectedIndex);
+const $ContactItemUI = document.getElementById('contact-item-details'); //pega elemento pelo seu id
+
+
+$ContactItemUI.innerHTML = `${selectedItem['fname']} <br> ${selectedItem['lname']} <br> ${selectedItem['phone']} <br> ${selectedItem['email']}`; //parte visual para mostrar todos os dados contidos na array de objetos
+
+this.hightlightCurrentListItem(selectedIndex); //destaca o item que o usuário está com o mouse em cima
 
 }
 
@@ -232,41 +232,41 @@ hightlightCurrentListItem(selectedIndex) {
 
 renderContactListModule() {
 
-    // model
-    const contacts = addressBookApp.getContacts();
+    
+    const contacts = addressBookApp.getContacts(); //recebe os contatos?
 
-    // view 
-    const $ContactListUI = document.getElementById('contact-list')
+    
+    const $ContactListUI = document.getElementById('contact-list') //mostra a lista de contatos de acordo com sua id
     $ContactListUI.innerHTML = '';
 
     
 
-    // ctrl
+    
     for (let i = 0, len = contacts.length; i < len; i++) {
 
       
 
-        // edit icon
-        let $editIcon = document.createElement('small');
+       
+        let $editIcon = document.createElement('small'); //icone do botao editar
         $editIcon.setAttribute('class', 'edit-contact-btn');
         $editIcon.setAttribute('data-index', i);
         $editIcon.innerHTML = '&#9998';
         $editIcon.addEventListener("click", this.editContactBtnClicked.bind(this));
 
-        // remove icon
-        let $removeIcon = document.createElement('small');
+        
+        let $removeIcon = document.createElement('small'); //icone do botao remover
         $removeIcon.setAttribute('class', 'remove-contact-btn');
         $removeIcon.setAttribute('data-index', i);
         $removeIcon.innerHTML = '&#9747';
         $removeIcon.addEventListener("click", this.removeContact.bind(this));
 
-        // label div
+        
         let $div = document.createElement('div');
         $div.innerHTML = `${contacts[i]['fname']}, <strong>${contacts[i]['lname']}</strong> `;
         $div.append($removeIcon);
         $div.append($editIcon);
 
-          // list item
+        
         let $li = document.createElement('li');
         $li.setAttribute('class', 'contact-list-item');
         $li.setAttribute('data-index', i);
@@ -283,11 +283,11 @@ renderContactListModule() {
 }
 
 
-// create an object from the class AddressBookView
-const addressBookView = new AddressBookView();
 
-// create an object from AddressBookCtrl and passing addressBookView in the constructor as a dependent
-const addressBookApp = new AddressBookCtrl(addressBookView);
+const addressBookView = new AddressBookView(); //cria um objeto a partir da classe AddressBookView
 
-// App starting...
-addressBookApp.init();
+
+const addressBookApp = new AddressBookCtrl(addressBookView); //cria um objeto a partir do AddressBookCtrl. Tem alguma relação tbm com a variável, mas não entendi exatamente o que faz.
+
+
+addressBookApp.init(); //inicializador do programa
